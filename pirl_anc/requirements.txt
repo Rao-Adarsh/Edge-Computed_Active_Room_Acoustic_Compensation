@@ -1,0 +1,15 @@
+-e ./pyroomacoustics
+-e ./jwave
+numpy
+scipy
+matplotlib
+soundfile
+torch
+gymnasium
+stable-baselines3
+pyserial
+tqdm
+PyYAML
+jax
+jaxlib
+tensorflow

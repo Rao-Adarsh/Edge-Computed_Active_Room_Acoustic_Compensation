@@ -1,0 +1,6 @@
+ME_791.pdf
+.venv/
+__pycache__/
+pirl_anc/__pycache__/
+pirl_anc/pirl_anc.egg-info/
+pirl_anc/data/
