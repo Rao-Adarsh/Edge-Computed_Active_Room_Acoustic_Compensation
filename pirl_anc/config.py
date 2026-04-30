@@ -27,10 +27,10 @@ class RoomConfig:
     duration_seconds: float = 2.0
     source_pos: tuple[float, float] = (1.5, 2.5)
     array_center: tuple[float, float] = (3.0, 2.5)
-    target_pos: tuple[float, float] = (3.0, 2.5)
+    target_pos: tuple[float, float] = (1.0, 1.0)
     n_mics: int = 8
     mic_radius: float = 0.5
-    f_max: float = 4_000.0
+    f_max: float = 400.0
     speed_of_sound: float = 343.0
     strict_spatial_nyquist: bool = False
     secondary_speaker_radius: float = 0.35
