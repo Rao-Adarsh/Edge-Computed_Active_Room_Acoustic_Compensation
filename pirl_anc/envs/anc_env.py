@@ -67,6 +67,10 @@ class ANCEnvironment(gymnasium.Env):
         self.n_freq_bins = int(n_freq_bins)
         self.fs = int(fs)
 
+        # Reward tuning
+        self.alpha_reward = 1.0
+        self.beta_reward = 0.0
+
         # Build room simulator from config
         self.room = RoomSimulator.from_config(cfg.room)
 
@@ -113,6 +117,11 @@ class ANCEnvironment(gymnasium.Env):
     @property
     def action_dim(self) -> int:
         return self._action_dim
+
+    def set_reward_weights(self, alpha: float, beta: float) -> None:
+        """Dynamically update the hybrid reward weights."""
+        self.alpha_reward = float(alpha)
+        self.beta_reward = float(beta)
 
     def _load_virtual_sensor(self, checkpoint_path: str | Path) -> None:
         """Load a trained VirtualSensor from a checkpoint file."""
@@ -219,10 +228,27 @@ class ANCEnvironment(gymnasium.Env):
 
         # Truncate anti-noise to match available target samples
         an = anti_noise[: len(target_window)]
-        residual = target_window + an
+        # Reward: Hybrid Time-Frequency MSE
+        target_t = torch.from_numpy(target_window).float()
+        an_t = torch.from_numpy(an).float()
 
-        # Reward: negative mean squared pressure (lower residual = better)
-        reward = -float(np.mean(residual ** 2))
+        # 1. Time-domain MSE (phase-sensitive)
+        mse_time = torch.mean((target_t + an_t) ** 2)
+
+        # 2. Frequency-domain MSE (phase-invariant)
+        # Apply windowing to reduce spectral leakage
+        hann_win = torch.hann_window(len(target_t))
+        target_fft = torch.fft.rfft(target_t * hann_win)
+        an_fft = torch.fft.rfft(an_t * hann_win)
+        
+        # To avoid the silence trap, we compare magnitudes.
+        # Ideal anti-noise is -target, so its magnitude should equal the target's magnitude.
+        target_mag = torch.abs(target_fft) / len(target_t)
+        an_mag = torch.abs(an_fft) / len(target_t)
+        mse_freq = torch.mean((target_mag - an_mag) ** 2)
+
+        reward_tensor = -(self.alpha_reward * mse_time + self.beta_reward * mse_freq)
+        reward = float(reward_tensor.item())
 
         # Advance step
         self._step_idx += 1

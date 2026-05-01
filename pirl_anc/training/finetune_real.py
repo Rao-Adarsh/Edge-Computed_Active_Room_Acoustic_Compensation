@@ -184,6 +184,12 @@ def finetune(
         total_steps = 0
 
         for episode in trange(n_episodes, desc="finetune"):
+            # Anneal reward weights linearly over episodes
+            progress = episode / max(1, n_episodes - 1)
+            alpha = 0.1 + 0.9 * progress
+            beta = 0.9 - 0.9 * progress
+            env.set_reward_weights(alpha, beta)
+
             obs, _ = env.reset()
             ep_reward = 0.0
             done = False
