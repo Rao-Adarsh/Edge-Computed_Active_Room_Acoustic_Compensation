@@ -1,0 +1,24 @@
+# Core Dependencies
+numpy
+scipy
+matplotlib
+soundfile
+torch
+gymnasium
+stable-baselines3
+pyserial
+tqdm
+PyYAML
+jax
+jaxlib
+tensorflow
+
+# Upstream Projects
+# Standard releases on PyPI (highly recommended fallback if local repository clones are empty):
+pyroomacoustics
+jwave
+
+# Editable installation alternatives (uncomment these and comment out the releases above 
+# if you have successfully cloned the respective repositories into the project root):
+# -e ./pyroomacoustics
+# -e ./jwave

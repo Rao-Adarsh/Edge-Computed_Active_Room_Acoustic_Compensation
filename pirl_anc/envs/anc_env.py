@@ -228,6 +228,7 @@ class ANCEnvironment(gymnasium.Env):
 
         # Truncate anti-noise to match available target samples
         an = anti_noise[: len(target_window)]
+        residual = target_window + an
         # Reward: Hybrid Time-Frequency MSE
         target_t = torch.from_numpy(target_window).float()
         an_t = torch.from_numpy(an).float()

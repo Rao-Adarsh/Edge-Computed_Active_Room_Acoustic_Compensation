@@ -1,0 +1,11 @@
+[submodule "jwave"]
+	path = jwave
+	url = https://github.com/ucl-bug/jwave.git
+
+[submodule "nah-khcnn"]
+	path = nah-khcnn
+	url = https://github.com/polimi-ispl/nah-khcnn.git
+
+[submodule "pyroomacoustics"]
+	path = pyroomacoustics
+	url = https://github.com/LCAV/pyroomacoustics.git
